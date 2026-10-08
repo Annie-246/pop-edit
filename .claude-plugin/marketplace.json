@@ -1,0 +1,12 @@
+{
+  "name": "pop-edit",
+  "description": "Marketplace chứa skill pop-edit: dựng video talking-head dọc 9:16 bằng Claude Code.",
+  "owner": { "name": "Annie-246" },
+  "plugins": [
+    {
+      "name": "pop-edit",
+      "source": "./",
+      "description": "Dựng video talking-head dọc 9:16 kiểu typo-pop bằng code (Claude Code skill)."
+    }
+  ]
+}

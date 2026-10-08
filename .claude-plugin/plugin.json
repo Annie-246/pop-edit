@@ -1,0 +1,17 @@
+{
+  "name": "pop-edit",
+  "description": "Dựng video talking-head dọc 9:16 kiểu typo-pop bằng code: tiêu đề, bố cục chia đôi, thẻ minh họa, danh sách pop-up, sticker, SFX, nhạc nền, làm đều tiếng và caption tự né mặt.",
+  "version": "1.0.0",
+  "license": "MIT",
+  "keywords": [
+    "video",
+    "editing",
+    "captions",
+    "shorts",
+    "reels",
+    "vietnamese"
+  ],
+  "author": {
+    "name": "Annie-246"
+  }
+}

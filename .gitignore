@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.popedit/
+out/
+*.mp4
+*.mov
+*.wav
+!docs/img/*.png
+examples/demo/source.mp4
+examples/demo/assets/
+examples/demo/project.json
