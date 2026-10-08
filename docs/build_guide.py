@@ -113,62 +113,41 @@ def shot(page, html_text, out_png, selector="body"):
 
 def main():
     os.makedirs(IMG, exist_ok=True)
-    plan_rows = [("0 – 2", "person", "Chào, mở đầu"),
-                 ("2 – 6", "split", "Tiêu đề “Record yourself” + ảnh màn hình"),
-                 ("6 – 11", "full", "Số $276 đếm lên"),
-                 ("11 – 17", "full", "3 thẻ pop-up: Health / Money / Relationships"),
-                 ("17 – 24", "full", "Nhân vật full khung, swipe từng người"),
-                 ("24 – 31", "pip", "Ảnh Dashboard + sticker robot, người nói thu nhỏ góc"),
-                 ("31 – 35", "person → full", "Kết + logo")]
-    plan_tbl = "<table><tr><th>Giây</th><th>Kiểu</th><th>Hình / chữ</th></tr>" + "".join(
-        f"<tr><td>{a}</td><td><code>{b}</code></td><td>{c}</td></tr>" for a, b, c in plan_rows) + "</table>"
-
-    chat1 = chat_html("Claude Code — thư mục video-cua-toi", [
-        ("user", "Dựng giúp mình video này theo kiểu <code>pop-edit</code>. Source là <code>source.mp4</code>, ảnh minh họa trong <code>assets/</code>. "
+    chat_install = chat_html("Claude Code", [
+        ("user", "Cài giúp mình skill này: <code>https://github.com/Annie-246/pop-edit</code>"),
+        ("claude", "Mình đã tải skill về và cài vào <code>~/.claude/skills/pop-edit</code>. Đang kiểm tra máy của bạn…"
+                   "<div class='tool'>$ python popedit.py setup\n  THIẾU  ffmpeg  ->  winget install Gyan.FFmpeg</div>"
+                   "Máy bạn <b>chưa có ffmpeg</b> — công cụ xử lý video, miễn phí, skill cần nó để dựng. "
+                   "Bạn cho mình cài bằng <code>winget install Gyan.FFmpeg</code> nhé?"),
+        ("user", "Ừ cài đi"),
+        ("claude", "Đã cài xong ffmpeg và các thư viện còn thiếu. Chạy lại kiểm tra: <b>SẴN SÀNG ✔</b>.<br>Bạn muốn chạy thử video demo, hay dựng luôn video của bạn?"),
+    ])
+    chat_make = chat_html("Claude Code — thư mục video-cua-toi", [
+        ("user", "Dựng video này bằng skill pop-edit. Source là <code>source.mp4</code>, ảnh minh họa trong <code>assets/</code>. "
                  "<b>Chưa dựng vội</b>, đưa mình bảng kế hoạch giây → kiểu → hình gì để mình duyệt."),
-        ("claude", "Mình đã kiểm tra: source 1080×1920, 30 fps, dài 35 giây. Đã bóc băng lời nói và sửa tên riêng.<div class='tool'>$ python popedit.py transcribe source.mp4 --lang en\n→ 8 câu</div>"
-                   "Đây là kế hoạch đề xuất:" + plan_tbl + "Bạn duyệt giúp mình, hoặc chỉnh chỗ nào thì nói nhé."),
-        ("user", "Ổn rồi. Đổi đoạn 6–11 sang nền đậm cho nổi số nhé."),
+        ("claude", "Mình đã bóc băng và kiểm tra file (1080×1920, 35 giây). Kế hoạch đề xuất:"
+                   "<table><tr><th>Giây</th><th>Kiểu</th><th>Hình / chữ</th></tr>"
+                   "<tr><td>2 – 6</td><td><code>split</code></td><td>Tiêu đề + ảnh màn hình</td></tr>"
+                   "<tr><td>6 – 11</td><td><code>full</code></td><td>Số $276 đếm lên</td></tr>"
+                   "<tr><td>11 – 17</td><td><code>full</code></td><td>3 thẻ pop-up theo lời nói</td></tr>"
+                   "<tr><td>17 – 24</td><td><code>full</code></td><td>Nhân vật full khung, swipe</td></tr></table>"
+                   "Bạn duyệt hoặc chỉnh giúp mình nhé."),
+        ("user", "Ổn. Đổi đoạn 6–11 sang nền đậm cho nổi số."),
+        ("claude", "Đã sửa. Mình xem thử bằng ảnh thu nhỏ rồi render: <code>out/final.mp4</code> xong. "
+                   "<b>Chưa kiểm được:</b> mình chưa nghe bằng tai, bạn nghe thử phần tiếng giúp mình."),
     ])
-    chat2 = chat_html("Claude Code — xem thử trước khi render", [
-        ("claude", "Đã sửa nền. Mình xuất bảng ảnh thu nhỏ để kiểm tra trước khi render đủ:<div class='tool'>$ python popedit.py sheet project.json --every 2.5\n→ .popedit/sheet.png</div>"
-                   "Mình đã mở ảnh xem:<ul><li>Chữ không tràn khung ✔</li><li>Thẻ pop-up không che mặt ✔</li><li>Đoạn 24–31s: sticker hơi gần ảnh, mình dời xuống 40px</li></ul>Mình render bản đầy đủ nhé?"),
-        ("user", "Ok render đi."),
-        ("claude", "Xong: <code>out/final.mp4</code> (35,2 giây, 1080×1920). <b>Chưa kiểm được:</b> mình chưa nghe bằng tai, bạn nghe thử giúp mình phần tiếng nhé."),
-    ])
-    chat3 = chat_html("Claude Code — thêm caption né mặt", [
+    chat_caption = chat_html("Claude Code — thêm phụ đề", [
         ("user", "Chèn phụ đề vào video, đảm bảo caption không che mặt. Che cổ được."),
-        ("claude", "Mình bóc băng, sửa lỗi nghe nhầm rồi đặt caption:<div class='tool'>$ python popedit.py captions out/final.mp4 --segments captions.json --level --audit\n"
-                   "     14 đoạn chữ, 5 đoạn được dời khỏi vị trí mặc định để né mặt\n     384 khung có caption, mặt chạm caption: 0</div>"
-                   "Ở cảnh chia đôi, chữ nằm ngay dưới khung trên. Tiếng cũng đã được làm đều. <b>Lưu ý:</b> chữ có thể che cổ/tay (bạn cho phép), và nhận diện mặt có thể nhầm bàn tay."),
+        ("claude", "Đã chèn. Mình kiểm tra lại trên video đã in:<div class='tool'>384 khung có caption, mặt chạm caption: 0</div>"
+                   "Ở cảnh chia đôi, chữ nằm ngay dưới khung trên. Tiếng cũng đã được làm đều. "
+                   "<b>Lưu ý:</b> chữ có thể che cổ/tay (bạn cho phép), và nhận diện mặt đôi khi nhầm bàn tay."),
     ])
-    term_install_win = ("PS C:\\Users\\ban> irm https://claude.ai/install.ps1 | iex\n"
-                        "PS C:\\Users\\ban> claude --version\n2.1.269 (Claude Code)\n"
-                        "PS C:\\Users\\ban> cd C:\\video-cua-toi\nPS C:\\video-cua-toi> claude")
-    term_setup = ("$ python popedit.py setup\npopedit 1.0.0\n"
-                  "Tải font + model nhận diện mặt vào C:\\Users\\ban\\.popedit\n"
-                  "  tải BricolageGrotesque.ttf ...\n  tải PlusJakartaSans.ttf ...\n  tải PlusJakartaSans-Italic.ttf ...\n"
-                  "  tải face_detection_yunet_2023mar.onnx ...\n\nSẴN SÀNG ✔")
-    term_render = ("$ python popedit.py render project.json\n    0.0s / 35.2s\n    5.0s / 35.2s\n   10.0s / 35.2s\n   ...\n   35.0s / 35.2s\n"
-                   "Xong: C:\\video-cua-toi\\out\\demo.mp4")
-    term_miss = ("$ python popedit.py setup\n  THIẾU  faster_whisper   ->  pip install faster-whisper\n"
-                 "  THIẾU  ffmpeg  ->  Windows: winget install Gyan.FFmpeg   |   macOS: brew install ffmpeg\n\n"
-                 "Còn thiếu thứ cần cài (xem các dòng THIẾU ở trên).")
-    term_skill = ("> /plugin marketplace add Annie-246/pop-edit\n> /plugin install pop-edit@pop-edit")
-
     with sync_playwright() as pw:
         b = _launch(pw)
         pg = b.new_page(viewport={"width": 960, "height": 800}, device_scale_factor=2)
-        shot(pg, chat1, os.path.join(IMG, "chat1.png"), ".win")
-        shot(pg, chat2, os.path.join(IMG, "chat2.png"), ".win")
-        shot(pg, chat3, os.path.join(IMG, "chat3.png"), ".win")
-        shot(pg, term_html("PowerShell", term_install_win), os.path.join(IMG, "term_install.png"), ".win")
-        shot(pg, term_html("Terminal", term_setup), os.path.join(IMG, "term_setup.png"), ".win")
-        shot(pg, term_html("Terminal", term_render), os.path.join(IMG, "term_render.png"), ".win")
-        shot(pg, term_html("Terminal — khi còn thiếu", term_miss), os.path.join(IMG, "term_missing.png"), ".win")
-        shot(pg, term_html("Claude Code", term_skill), os.path.join(IMG, "term_plugin.png"), ".win")
-        shot(pg, tree_html(), os.path.join(IMG, "tree.png"), ".box")
-        # ---- PDF
+        shot(pg, chat_install, os.path.join(IMG, "chat_install.png"), ".win")
+        shot(pg, chat_make, os.path.join(IMG, "chat_make.png"), ".win")
+        shot(pg, chat_caption, os.path.join(IMG, "chat_caption.png"), ".win")
         pg2 = b.new_page()
         src = open(os.path.join(HERE, "guide.html"), encoding="utf-8").read().replace("{{FONT}}", URI(FONT))
         tmp = os.path.join(HERE, "_guide.rendered.html")
@@ -177,9 +156,8 @@ def main():
         pg2.wait_for_timeout(800)
         pg2.pdf(path=os.path.join(HERE, "HUONG-DAN.pdf"), format="A4", print_background=True,
                 margin={"top": "16mm", "bottom": "16mm", "left": "15mm", "right": "15mm"},
-                display_header_footer=True,
-                header_template="<span></span>",
-                footer_template="<div style='font-size:9px;width:100%;text-align:center;color:#9a8a8e'>pop-edit — hướng dẫn · trang <span class='pageNumber'></span>/<span class='totalPages'></span></div>")
+                display_header_footer=True, header_template="<span></span>",
+                footer_template="<div style='font-size:9px;width:100%;text-align:center;color:#9a8a8e'>pop-edit · trang <span class='pageNumber'></span>/<span class='totalPages'></span></div>")
         b.close()
     os.remove(tmp)
     print("Đã tạo:", os.path.join(HERE, "HUONG-DAN.pdf"))

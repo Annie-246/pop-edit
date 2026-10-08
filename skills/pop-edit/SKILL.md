@@ -17,7 +17,9 @@ Hãy tìm đúng đường dẫn bằng `find`/`Glob` tên `popedit.py` trước
 ```bash
 python PE setup          # kiểm tra Python, ffmpeg, thư viện; tải font + model nhận diện mặt (~1 phút)
 ```
-Thiếu thư viện thì `pip install -r <skill>/scripts/requirements.txt`. Thiếu ffmpeg: Windows `winget install Gyan.FFmpeg`, macOS `brew install ffmpeg`.
+`setup` in dòng `THIẾU ...` kèm lệnh cài. **Với mỗi thứ thiếu: nói rõ nó là gì và để làm gì, hỏi người dùng đồng ý rồi mới chạy lệnh cài — không tự cài khi chưa hỏi.**
+Lệnh thường gặp: `pip install -r <skill>/scripts/requirements.txt` · ffmpeg: Windows `winget install Gyan.FFmpeg`, macOS `brew install ffmpeg` · Python: `winget install Python.Python.3.12` / `brew install python`.
+Sau khi cài xong, mở terminal mới nếu lệnh chưa nhận, chạy lại `setup` đến khi in `SẴN SÀNG ✔`.
 Chưa chắc làm được không thì chạy demo: `python <skill>/examples/demo/make_demo.py` (tự sinh video thử, không cần tư liệu).
 
 ## 1. Quy trình chuẩn (làm đúng thứ tự, đừng nhảy cóc)

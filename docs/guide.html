@@ -1,330 +1,112 @@
 <!doctype html>
-<html lang="vi"><head><meta charset="utf-8"><title>pop-edit — Hướng dẫn dựng video bằng Claude Code</title>
+<html lang="vi"><head><meta charset="utf-8"><title>pop-edit — Hướng dẫn</title>
 <style>
 @font-face { font-family:PJS; src:url('{{FONT}}/PlusJakartaSans.ttf'); font-weight:200 800; }
 @font-face { font-family:BRI; src:url('{{FONT}}/BricolageGrotesque.ttf'); font-weight:200 800; }
 :root{ --ink:#2b1f22; --rose:#b83e62; --pink:#f1bcc6; --beige:#f7ede0; --mute:#7b6b70; --line:#e3d6ca; }
 *{box-sizing:border-box}
-body{font-family:PJS,'Segoe UI',sans-serif;color:var(--ink);font-size:11.2pt;line-height:1.6;margin:0}
+body{font-family:PJS,'Segoe UI',sans-serif;color:var(--ink);font-size:11.2pt;line-height:1.5;margin:0}
 h1,h2,h3{font-family:BRI,PJS,sans-serif;line-height:1.2;margin:0}
-h1{font-size:30pt;font-weight:800}
-h2{font-size:19pt;font-weight:800;color:var(--rose);margin:0 0 8px;padding-top:2px}
-h3{font-size:13pt;font-weight:700;margin:18px 0 6px}
+h2{font-size:21pt;font-weight:800;color:var(--rose);margin:0 0 10px}
+h3{font-size:13.5pt;font-weight:700;margin:16px 0 6px}
 p{margin:6px 0}
-.cover{height:262mm;background:var(--beige);border-radius:14px;padding:26mm 18mm;position:relative;overflow:hidden;page-break-after:always}
+.cover{height:262mm;background:var(--beige);border-radius:14px;padding:22mm 16mm;position:relative;overflow:hidden;page-break-after:always}
 .cover:before{content:"";position:absolute;right:-40mm;top:-40mm;width:105mm;height:105mm;background:var(--pink);border-radius:50%}
-.cover .kicker{color:var(--rose);font-weight:700;letter-spacing:.08em;font-size:11pt;position:relative;z-index:2;max-width:120mm}
-.cover h1{font-size:44pt;margin:6mm 0;position:relative}
-.cover p.sub{font-size:14pt;max-width:130mm;position:relative}
-.cover img{width:100%;border-radius:10px;margin-top:10mm;position:relative}
+.cover .kicker{color:var(--rose);font-weight:700;letter-spacing:.08em;font-size:11pt;position:relative;z-index:2}
+.cover h1{font-size:46pt;font-weight:800;margin:5mm 0;position:relative}
+.cover p.sub{font-size:14.5pt;max-width:140mm;position:relative}
+.cover img{width:100%;border-radius:10px;margin-top:9mm;position:relative}
 .sec{page-break-before:always}
-.step{display:inline-block;background:var(--rose);color:#fff;font-weight:800;border-radius:20px;padding:1px 12px;font-size:10pt;margin-right:8px;vertical-align:middle}
+.big{display:flex;gap:14px;align-items:flex-start;margin:10px 0}
+.num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--rose);color:#fff;font-weight:800;font-size:15pt;display:flex;align-items:center;justify-content:center}
+.big .t{font-weight:700;font-size:14pt}
 img.fig{width:100%;border-radius:8px;border:1px solid var(--line);margin:8px 0 2px;display:block}
 .cap{font-size:9pt;color:var(--mute);margin:0 0 10px;text-align:center}
-.note{background:#fff7e6;border-left:4px solid #f0a020;padding:8px 12px;border-radius:6px;margin:10px 0;font-size:10.4pt}
-.tip{background:#eaf7ee;border-left:4px solid #3a9d5d;padding:8px 12px;border-radius:6px;margin:10px 0;font-size:10.4pt}
-.warn{background:#fdecec;border-left:4px solid #d64545;padding:8px 12px;border-radius:6px;margin:10px 0;font-size:10.4pt}
+.note{background:#fff7e6;border-left:4px solid #f0a020;padding:8px 12px;border-radius:6px;margin:10px 0;font-size:10.6pt}
+.tip{background:#eaf7ee;border-left:4px solid #3a9d5d;padding:8px 12px;border-radius:6px;margin:10px 0;font-size:10.6pt}
 code{background:#f2ebe4;padding:1px 6px;border-radius:5px;font-family:Consolas,monospace;font-size:10pt}
-pre{background:#0d1117;color:#d6dee8;padding:10px 14px;border-radius:8px;font-family:Consolas,monospace;font-size:9.6pt;line-height:1.5;white-space:pre-wrap;margin:8px 0}
-.prompt{background:#fbf8f4;border:1px dashed #cdb9a6;border-radius:8px;padding:9px 13px;margin:8px 0;font-size:10.4pt}
-.prompt b{color:var(--rose)}
-table{border-collapse:collapse;width:100%;margin:8px 0;font-size:10pt}
-th,td{border:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top}
+pre{background:#0d1117;color:#d6dee8;padding:9px 14px;border-radius:8px;font-family:Consolas,monospace;font-size:10pt;line-height:1.5;white-space:pre-wrap;margin:6px 0}
+.say{background:#fbf8f4;border:1px dashed #cdb9a6;border-radius:8px;padding:9px 13px;margin:8px 0;font-size:11pt}
+table{border-collapse:collapse;width:100%;margin:8px 0;font-size:10.6pt}
+th,td{border:1px solid var(--line);padding:6px 9px;text-align:left;vertical-align:top}
 th{background:var(--beige)}
-ol,ul{margin:6px 0 6px 20px;padding:0}
-li{margin:3px 0}
-.two{display:flex;gap:14px}.two>div{flex:1}
-.nb{page-break-inside:avoid}
+ul{margin:6px 0 6px 20px;padding:0}li{margin:4px 0}
 .small{font-size:9.6pt;color:var(--mute)}
 </style></head><body>
 
-<!-- ============ BÌA ============ -->
 <div class="cover">
-  <div class="kicker">HƯỚNG DẪN TỪNG BƯỚC · DÀNH CHO NGƯỜI MỚI</div>
+  <div class="kicker">HƯỚNG DẪN · 5 PHÚT LÀ DÙNG ĐƯỢC</div>
   <h1>pop-edit</h1>
-  <p class="sub">Biến 1 video quay mặt thành video dọc 9:16 có tiêu đề, ảnh minh họa pop-up, SFX, nhạc nền và phụ đề tự né mặt — chỉ bằng cách <b>trò chuyện với Claude Code</b>.</p>
-  <img src="img/showcase.png">
-  <p class="small" style="position:relative;margin-top:6mm">Hình trên là video thử do chính skill dựng (người nói và ảnh minh họa đều là hình vẽ tự sinh, không có người thật).</p>
+  <p class="sub">Biến video quay mặt thành video dọc 9:16 có tiêu đề, ảnh minh họa pop-up, SFX, nhạc nền và phụ đề né mặt — chỉ bằng cách <b>trò chuyện với Claude Code</b>.</p>
+  <img src="img/result.png">
+  <p class="small" style="position:relative;margin-top:5mm">Kết quả thật, cắt từ 1 video đã dựng bằng skill này. Bản có tiếng: <b>github.com/Annie-246/pop-edit</b> → <code>docs/demo.mp4</code>. Ảnh trong khung từ video của Mark Tilbury là tư liệu tham khảo, có ghi nguồn.</p>
 </div>
 
-<!-- ============ 1 ============ -->
 <div class="sec">
-<h2>1. Bạn sẽ làm được gì?</h2>
-<p>Bạn quay 1 video nói chuyện (dọc, 9:16), đưa thêm vài ảnh/clip minh họa. Claude Code dùng skill <b>pop-edit</b> để dựng giúp bạn, còn bạn chỉ cần <b>duyệt kế hoạch</b> và <b>nói chỗ nào muốn sửa</b>. Không cần biết lập trình, không cần phần mềm dựng.</p>
-<img class="fig" src="img/before_after.png" style="width:50%;margin-left:auto;margin-right:auto"><div class="cap">Trước và sau (video thử)</div>
+<h2>Cài đặt — chỉ 3 bước</h2>
 
-<h3>Skill này có sẵn những kiểu edit nào?</h3>
-<table>
-<tr><th>Kiểu</th><th>Làm gì</th></tr>
-<tr><td><b>Chữ tiêu đề đậm</b> có ô chọn chữ</td><td>chữ in hoa đậm, dòng cuối được "bôi chọn" như đang chọn văn bản</td></tr>
-<tr><td><b>Chia đôi màn hình</b></td><td>minh họa ở nửa trên, bạn ở nửa dưới</td></tr>
-<tr><td><b>Thẻ ảnh/clip bật lên</b></td><td>có khung bo góc, bóng đổ, ghi nguồn nhỏ bên dưới</td></tr>
-<tr><td><b>Danh sách pop-up theo lời nói</b></td><td>bạn nhắc tới mục nào, thẻ có icon + từ khoá bật lên đúng lúc đó</td></tr>
-<tr><td><b>Số đếm lên</b></td><td>vd. $0 → $276</td></tr>
-<tr><td><b>Nhân vật full khung + swipe</b></td><td>mỗi người/sản phẩm chiếm cả màn hình, vuốt sang cái kế</td></tr>
-<tr><td><b>Sticker</b></td><td>icon vẽ sẵn (robot, kịch bản, ngôi sao…) thay cho ảnh chụp giao diện</td></tr>
-<tr><td><b>Người nói thu nhỏ ở góc (PiP)</b></td><td>khi clip minh họa cần cả khung</td></tr>
-<tr><td><b>Logo</b>, <b>chuyển cảnh quét màu</b></td><td>logo bật vào; mỗi lần đổi cảnh có tấm màu quét ngang</td></tr>
-<tr><td><b>SFX, nhạc nền</b></td><td>âm thanh tự tạo (không dính bản quyền); nhạc hạ xuống khi bạn nói</td></tr>
-<tr><td><b>Làm đều tiếng nói</b></td><td>kéo các đoạn to/nhỏ về cùng một mức</td></tr>
-<tr><td><b>Phụ đề tự né mặt</b></td><td>mỗi cụm chữ tự tìm chỗ không che mặt bạn</td></tr>
-<tr><td><b>Đổi màu</b></td><td>có sẵn be-hồng, xanh, tím pastel; hoặc tự đặt màu</td></tr>
-</table>
-<p class="small">Skill này làm việc với <b>video dọc 1080×1920</b>. Nó dựng bằng code nên 1 lần chạy cần vài phút; đổi lại, mọi chỗ đều sửa được và render lại y hệt.</p>
+<div class="big"><div class="num">1</div><div><div class="t">Cài Claude Code (làm 1 lần)</div>
+Cần tài khoản Claude trả phí (Pro, Max, Team hoặc Enterprise). Mở <b>PowerShell</b> (Windows) hoặc <b>Terminal</b> (Mac) và dán:
+<pre>Windows :  irm https://claude.ai/install.ps1 | iex
+Mac     :  curl -fsSL https://claude.ai/install.sh | bash</pre>
+Đóng rồi mở lại cửa sổ, gõ <code>claude</code>, đăng nhập tài khoản Claude trên trình duyệt hiện ra.</div></div>
+
+<div class="big"><div class="num">2</div><div><div class="t">Mở Claude Code trong thư mục chứa video</div>
+Bỏ <code>source.mp4</code> (video quay mặt, dọc) và ảnh/clip minh họa vào 1 thư mục, vd. <code>C:\video-cua-toi</code>. Rồi:
+<pre>cd C:\video-cua-toi
+claude</pre></div></div>
+
+<div class="big"><div class="num">3</div><div><div class="t">Dán link repo và nhờ Claude cài skill</div>
+<div class="say"><b>Bạn nói:</b> "Cài giúp mình skill này: https://github.com/Annie-246/pop-edit"</div>
+Xong! Claude tự tải và cài skill. <b>Máy thiếu công cụ gì</b> (Python, ffmpeg…) thì Claude sẽ <b>báo và hỏi bạn có cài không</b> — bạn chỉ cần trả lời "ừ".</div></div>
+
+<img class="fig" src="img/chat_install.png" style="width:76%;margin-left:auto;margin-right:auto"><div class="cap">Minh họa (dựng lại): Claude cài skill và hỏi trước khi cài công cụ còn thiếu</div>
+<div class="tip"><b>Không biết có Claude Code chưa?</b> Mở terminal gõ <code>claude --version</code>. Có số phiên bản là đã có. Thích giao diện có khung chat? Cài VS Code, mở mục Extensions, tìm <b>"Claude Code"</b>.</div>
 </div>
 
-<!-- ============ 2 ============ -->
 <div class="sec">
-<h2>2. Cần chuẩn bị gì?</h2>
-<table>
-<tr><th style="width:34%">Thứ cần có</th><th>Chi tiết</th></tr>
-<tr><td>Máy tính</td><td>Windows 10 (bản 1809 trở lên) hoặc macOS 13 trở lên; RAM 4 GB trở lên (khuyên 8 GB); trống khoảng 5 GB ổ đĩa.</td></tr>
-<tr><td>Tài khoản Claude trả phí</td><td>Claude Code cần gói <b>Pro, Max, Team hoặc Enterprise</b> (gói miễn phí không dùng được). Không cần API key — đăng nhập bằng trình duyệt.</td></tr>
-<tr><td>Python</td><td>Bản 3.10 trở lên (skill được thử trên 3.12). Tải ở python.org.</td></tr>
-<tr><td>ffmpeg</td><td>Công cụ xử lý video, miễn phí.</td></tr>
-<tr><td>Internet</td><td>Lần đầu để tải Claude Code, font, model nhận diện mặt và model nhận diện giọng nói.</td></tr>
-<tr><td>Tư liệu</td><td>1 video quay mặt (dọc), vài ảnh/clip minh họa, (tuỳ chọn) logo, nhạc nền được phép dùng.</td></tr>
-</table>
-<div class="note"><b>Bản quyền &amp; riêng tư — đọc trước khi làm:</b> nếu dùng ảnh/clip của người khác, luôn ghi nguồn; chỉ dùng nhạc được phép (nhạc miễn phí có ghi nguồn, hoặc nhạc bạn sở hữu); không đưa lên video những màn hình lộ mật khẩu, API key, email hay thông tin khách hàng.</div>
-
-<h2 style="margin-top:22px"><span class="step">Bước 1</span>Cài Python và ffmpeg</h2>
-<h3>Windows</h3>
-<ol>
-<li>Vào <b>python.org → Downloads</b>, tải bản mới nhất, chạy file cài. <b>Quan trọng:</b> tick vào ô <b>"Add python.exe to PATH"</b> ở màn hình đầu tiên rồi bấm Install Now.</li>
-<li>Mở <b>PowerShell</b> (bấm Start, gõ "PowerShell") và gõ:
-<pre>winget install Gyan.FFmpeg</pre></li>
-<li><b>Đóng PowerShell rồi mở lại</b>, kiểm tra:
-<pre>python --version
-ffmpeg -version</pre>Cả hai in ra số phiên bản là xong.</li>
-</ol>
-<h3>macOS</h3>
-<pre>brew install python ffmpeg</pre>
-<p class="small">Chưa có Homebrew thì làm theo hướng dẫn ở brew.sh (1 dòng lệnh).</p>
-</div>
-
-<!-- ============ 3 ============ -->
-<div class="sec">
-<h2><span class="step">Bước 2</span>Cài Claude Code</h2>
-<h3>Windows (PowerShell)</h3>
-<pre>irm https://claude.ai/install.ps1 | iex</pre>
-<h3>macOS / Linux</h3>
-<pre>curl -fsSL https://claude.ai/install.sh | bash</pre>
-<p>Cài xong, mở terminal mới và kiểm tra, rồi vào thư mục làm việc và gõ <code>claude</code>:</p>
-<img class="fig" src="img/term_install.png" style="width:86%"><div class="cap">Ví dụ trên Windows. Chữ "ban" là tên người dùng máy của bạn</div>
-<ol>
-<li>Lần đầu gõ <code>claude</code>, nó mở trình duyệt để bạn <b>đăng nhập tài khoản Claude</b>. Đăng nhập xong quay lại terminal.</li>
-<li>Nếu hỏi "tin cậy thư mục này không?" chọn <b>Yes</b> (đây là thư mục video của bạn).</li>
-<li>Từ đó, bạn <b>gõ tiếng Việt bình thường</b> để giao việc cho Claude.</li>
-</ol>
-<div class="tip"><b>Thích giao diện đẹp hơn terminal?</b> Cài VS Code, vào Extensions (Ctrl+Shift+X), tìm <b>"Claude Code"</b> rồi Install. Cách dùng y hệt, chỉ khác là có khung chat. (VS Code cần bản 1.94 trở lên.)</div>
-<p>Cách mở đúng: <b>luôn mở Claude Code ngay trong thư mục chứa video của bạn</b> (xem bước 5), vì Claude chỉ thấy file trong thư mục đó.</p>
-
-<h2 style="margin-top:22px"><span class="step">Bước 3</span>Cài skill pop-edit</h2>
-<p>Có 2 cách, chọn 1.</p>
-<h3>Cách A — qua marketplace (dễ nhất)</h3>
-<p>Trong Claude Code, gõ lần lượt 2 dòng:</p>
-<img class="fig" src="img/term_plugin.png" style="width:86%">
-<p>Lệnh đầu thêm "kho" skill; lệnh sau cài skill. Cài xong là dùng được ngay, không cần khởi động lại.</p>
-<h3>Cách B — tải về rồi chép tay</h3>
-<ol>
-<li>Vào trang GitHub của skill: <b>github.com/Annie-246/pop-edit</b> → nút xanh <b>Code → Download ZIP</b>, giải nén.</li>
-<li>Chép thư mục <code>skills/pop-edit</code> vào thư mục skill cá nhân của bạn:
-<table>
-<tr><td>Windows</td><td><code>C:\Users\&lt;tên bạn&gt;\.claude\skills\pop-edit</code></td></tr>
-<tr><td>macOS / Linux</td><td><code>~/.claude/skills/pop-edit</code></td></tr>
-</table>
-<span class="small">Nếu chưa có thư mục <code>skills</code> thì tự tạo. Cách này dùng được cho mọi dự án. Muốn chỉ dùng cho 1 dự án: chép vào <code>.claude/skills/pop-edit</code> ngay trong thư mục dự án.</span></li>
-</ol>
-<div class="tip"><b>Kiểm tra đã cài chưa:</b> hỏi Claude "<i>bạn có skill pop-edit không?</i>" — nó sẽ mô tả skill. Hoặc gõ <code>/</code> và tìm tên <code>pop-edit</code>.</div>
-</div>
-
-<!-- ============ 4 ============ -->
-<div class="sec">
-<h2><span class="step">Bước 4</span>Chạy thử bằng video demo (khuyên làm)</h2>
-<p>Trước khi dùng video thật, chạy thử để chắc máy bạn đủ đồ nghề. Demo tự sinh người nói hoạt hình + tiếng đọc, <b>không cần tư liệu gì</b>.</p>
-<p>Cách dễ nhất: nhờ Claude làm.</p>
-<div class="prompt"><b>Bạn nói:</b> "Dùng skill pop-edit: chạy setup, rồi tạo và dựng video demo giúp mình."</div>
-<p>Claude sẽ chạy 3 việc: <code>setup</code> (kiểm tra + tải đồ), <code>make_demo.py</code> (sinh tư liệu), <code>render</code> (dựng). Nếu muốn tự gõ:</p>
-<pre># Windows (đổi đường dẫn nếu bạn cài cách khác)
-cd %USERPROFILE%\.claude\skills\pop-edit
-pip install -r scripts\requirements.txt
-python scripts\popedit.py setup
-cd examples\demo
-python make_demo.py
-python ..\..\scripts\popedit.py render project.json</pre>
-<img class="fig" src="img/term_setup.png" style="width:86%"><div class="cap">Lần đầu chạy <code>setup</code>: tải font + model nhận diện mặt vào thư mục <code>.popedit</code> trong thư mục cá nhân (chỉ tải 1 lần)</div>
-<p>Nếu còn thiếu thứ gì, <code>setup</code> sẽ chỉ rõ và cho sẵn lệnh cài:</p>
-<img class="fig" src="img/term_missing.png" style="width:86%">
-<img class="fig" src="img/term_render.png" style="width:86%"><div class="cap">Dựng xong in dòng "Xong:" kèm đường dẫn file. Video 35 giây mất khoảng 1 phút</div>
-<div class="note"><b>Mất bao lâu?</b> Dựng chậm hơn xem video: khoảng <b>4–6 phút cho mỗi 1 phút video</b>. Vì vậy skill luôn cho xem bảng ảnh thu nhỏ trước (vài giây) và chỉ render đầy đủ 1 lần cuối.</div>
-<p>Mở file <code>out/demo.mp4</code> xem thử. Thấy video có chữ, thẻ pop-up, người nói hoạt hình là máy bạn đã sẵn sàng.</p>
-</div>
-
-<!-- ============ 5 ============ -->
-<div class="sec">
-<h2><span class="step">Bước 5</span>Chuẩn bị tư liệu thật</h2>
-<h3>5.1 Quay video</h3>
+<h2>Dựng video</h2>
+<p>Nguyên tắc: <b>bắt Claude đưa kế hoạch trước khi dựng</b>. Duyệt kế hoạch mất 1 phút, rẻ hơn nhiều so với dựng xong mới sửa.</p>
+<div class="say"><b>Bạn nói:</b> "Dựng video này bằng skill pop-edit. Source là <code>source.mp4</code>, ảnh minh họa trong <code>assets/</code>. Nội dung: [1–2 câu nói video về gì]. Chưa dựng vội, đưa mình bảng kế hoạch giây → kiểu → hình gì."</div>
+<img class="fig" src="img/chat_make.png" style="width:76%;margin-left:auto;margin-right:auto"><div class="cap">Minh họa (dựng lại): kế hoạch → bạn duyệt/sửa → xem thử → dựng</div>
+<h3>Chuẩn bị tư liệu (ngắn gọn)</h3>
 <ul>
-<li><b>Quay dọc</b> (điện thoại cầm dọc), tỉ lệ <b>9:16</b>. Skill cần file <b>1080×1920</b>. Nếu video của bạn có kích thước khác, nhờ Claude: <i>"đổi source.mp4 sang 1080×1920"</i>.</li>
-<li>Quay ở nơi sáng, mặt rõ, <b>đầu không sát đỉnh khung</b> (chừa chỗ phía trên cho chữ khi chia đôi màn hình).</li>
-<li>Nói rõ từng ý; vấp thì nói lại câu đó, đừng im lặng quá lâu. (Nếu muốn cắt bỏ ậm ừ/vấp thì cắt trước, rồi đưa file đã cắt cho skill.)</li>
-<li>Giữ <b>giọng nói và tên riêng</b> đúng ý bạn — phụ đề và chữ trên màn hình được lấy từ lời bạn nói.</li>
+<li><b>Video chính:</b> quay <b>dọc 9:16</b>, đủ sáng, mặt rõ, chừa chỗ phía trên đầu. Skill cần file 1080×1920 (nếu khác, nhờ Claude: "đổi sang 1080×1920").</li>
+<li><b>Ảnh/clip minh họa:</b> png/jpg/mp4. Ảnh chụp màn hình thì <b>cắt bỏ chỗ lộ thông tin riêng tư</b>. Của người khác thì cho Claude biết nguồn để ghi "Nguồn: …".</li>
+<li><b>Tuỳ chọn:</b> logo PNG nền trong; nhạc nền được phép dùng.</li>
 </ul>
-<h3>5.2 Chuẩn bị ảnh / clip minh họa</h3>
-<ul>
-<li>Ảnh <b>.png / .jpg</b>, clip <b>.mp4</b>. Đặt tên dễ nhớ (<code>man-hinh-1.png</code>, <code>nhan-vat-a.png</code>).</li>
-<li>Ảnh chụp màn hình: chụp rõ nét, <b>cắt bỏ chỗ lộ thông tin riêng tư</b>. Hoặc nói với Claude cắt giúp.</li>
-<li>Ảnh/clip lấy của người khác: ghi lại <b>nguồn</b> để Claude gắn dòng "Nguồn: …" nhỏ dưới ảnh.</li>
-<li>Logo: PNG nền trong, chữ/hình đủ lớn.</li>
-<li>Nhạc nền (tuỳ chọn): file mp3/wav bạn <b>được phép dùng</b>. Nhạc miễn phí như Bensound cần ghi nguồn trong caption bài đăng.</li>
-</ul>
-<h3>5.3 Sắp xếp thư mục</h3>
-<img class="fig" src="img/tree.png" style="width:90%"><div class="cap">Bỏ tất cả vào 1 thư mục, rồi mở Claude Code trong thư mục đó</div>
-<div class="tip"><b>Mở thư mục trong Claude Code:</b> mở PowerShell, gõ <code>cd C:\video-cua-toi</code> (đổi theo đường dẫn thật) rồi gõ <code>claude</code>. Trong VS Code thì chọn <b>File → Open Folder</b> rồi mở khung Claude Code.</div>
-</div>
-
-<!-- ============ 6 ============ -->
-<div class="sec">
-<h2><span class="step">Bước 6</span>Giao việc cho Claude</h2>
-<p>Nguyên tắc vàng: <b>luôn bắt Claude đưa kế hoạch trước khi dựng</b>. Việc duyệt kế hoạch (1 phút) rẻ hơn rất nhiều so với dựng xong mới sửa (vài chục phút).</p>
-<div class="prompt"><b>Mẫu câu giao việc (copy được):</b><br>
-"Dựng giúp mình video này bằng skill <b>pop-edit</b>. Video chính là <code>source.mp4</code>, ảnh minh họa nằm trong thư mục <code>assets/</code>, logo là <code>assets/logo.png</code>. Nội dung: [1–2 câu nói video về gì]. <b>Chưa dựng vội</b>, đưa mình bảng kế hoạch: giây nào → kiểu gì → hình/chữ gì. Chỗ nào dùng ảnh nào thì ghi rõ."</div>
-<img class="fig" src="img/chat1.png"><div class="cap">Ảnh minh họa (dựng lại): Claude bóc băng, kiểm tra file rồi đưa bảng kế hoạch</div>
-<p class="small">Hình khung chat trong tài liệu này là <b>dựng lại để minh họa</b> theo đúng nội dung các lệnh và kết quả thật của skill; cuộc trò chuyện thật của bạn sẽ tương tự nhưng lời văn của Claude có thể khác.</p>
-<h3>Đọc kế hoạch thế nào?</h3>
-<ul>
-<li>Cột <b>Giây</b>: thời điểm trong video. Cột <b>Kiểu</b>: <code>person</code> (chỉ có bạn), <code>split</code> (chia đôi), <code>full</code> (đồ họa full màn hình), <code>pip</code> (bạn thu nhỏ ở góc).</li>
-<li>Kiểm tra: <b>không quá ~10 giây mà hình không đổi</b>; có xen kẽ ít nhất 3 kiểu; đoạn bạn nói tên/con số thì có chữ tương ứng.</li>
-<li>Không hài lòng chỗ nào thì nói thẳng: <i>"đoạn 6–11s đổi sang nền đậm"</i>, <i>"dùng ảnh nhan-vat-a ở giây 17"</i>.</li>
-</ul>
-<img class="fig" src="img/layouts.png" style="width:86%;margin-left:auto;margin-right:auto"><div class="cap">4 bố cục: person · split · full · pip</div>
-<div class="warn"><b>Nếu Claude tự bịa số liệu hay từ khoá</b> (vd. thêm từ khoá trên thẻ mà bạn chưa nói): hỏi lại "<i>chỗ này lấy từ đâu?</i>". Skill được dặn không bịa thông tin thật và phải báo khi tự nghĩ nội dung.</div>
-</div>
-
-<!-- ============ 7 ============ -->
-<div class="sec">
-<h2><span class="step">Bước 7</span>Xem thử, sửa, rồi dựng</h2>
-<p>Sau khi bạn duyệt, Claude viết "bảng dựng" <code>project.json</code>, rồi xuất <b>bảng ảnh thu nhỏ</b> toàn video để xem trước. Nó phải <b>mở ảnh ra xem thật</b> trước khi báo bạn.</p>
-<img class="fig" src="img/chat2.png"><div class="cap">Ảnh minh họa (dựng lại): xem thử → sửa → dựng đầy đủ</div>
-<h3>Cách yêu cầu sửa cho nhanh</h3>
+<h3>Muốn sửa thì cứ nói</h3>
 <table>
-<tr><th>Bạn muốn</th><th>Nói thế nào</th></tr>
-<tr><td>Đổi kiểu 1 đoạn</td><td>"Đoạn 24–31s chuyển từ chia đôi sang full màn hình."</td></tr>
-<tr><td>Đổi chữ</td><td>"Tiêu đề giây 8 đổi thành 'Quay chính bạn'."</td></tr>
-<tr><td>Đổi ảnh</td><td>"Giây 11 dùng <code>assets/dashboard.png</code>, cắt bỏ phần thanh bên trái."</td></tr>
-<tr><td>Pop-up lệch lời</td><td>"Thẻ 'Tài chính' phải hiện lúc mình nói chữ 'tài chính', hiện đang sớm quá."</td></tr>
-<tr><td>Đổi màu</td><td>"Đổi sang tone xanh dương" (theme <code>xanh</code>) hoặc "tím pastel".</td></tr>
-<tr><td>Thêm đoạn nghỉ</td><td>"Đoạn 17–24s nặng chữ quá, chèn 3 giây chỉ có mình nói."</td></tr>
-<tr><td>Xem lại 1 đoạn chuyển động</td><td>"Render thử từ giây 20 đến 35 cho mình xem."</td></tr>
+<tr><td>"Đoạn 24–31s chuyển sang <b>full màn hình</b>."</td><td>"Tiêu đề giây 8 đổi thành 'Quay chính bạn'."</td></tr>
+<tr><td>"Giây 11 dùng ảnh <code>dashboard.png</code>, cắt bỏ thanh bên trái."</td><td>"Thẻ 'Tài chính' hiện lúc mình nói chữ 'tài chính'."</td></tr>
+<tr><td>"Đổi sang <b>tone xanh dương</b>."</td><td>"Thêm nhạc <code>nhac.mp3</code>, nhỏ thôi."</td></tr>
+<tr><td>"Đoạn 17–24s nặng chữ quá, chèn 3 giây chỉ có mình nói."</td><td>"Render thử từ giây 20 đến 35 cho mình xem."</td></tr>
 </table>
-<div class="tip"><b>Mẹo:</b> một chỉnh sửa của bạn mặc định chỉ áp cho <b>video này</b>. Muốn nó thành quy tắc cho các video sau, hãy nói rõ "ghi nhớ lại" — Claude sẽ hỏi xác nhận trước khi lưu.</div>
-<h3>Đổi màu thế nào?</h3>
-<p>Có sẵn 3 bảng màu: <code>be-hong</code> (mặc định), <code>xanh</code>, <code>tim-pastel</code>. Muốn màu riêng cứ nói "nền đậm màu xanh mint, chữ nhấn màu xanh lá" — Claude sẽ tự đặt từng màu trong <code>theme</code>.</p>
+<p class="small">Một chỉnh sửa của bạn mặc định chỉ áp cho video này. Muốn thành quy tắc lâu dài, hãy nói "ghi nhớ lại" — Claude sẽ hỏi xác nhận.</p>
 </div>
 
-<!-- ============ 8 ============ -->
 <div class="sec">
-<h2><span class="step">Bước 8</span>Thêm phụ đề (caption) không che mặt</h2>
-<div class="prompt"><b>Bạn nói:</b> "Chèn phụ đề vào video, đảm bảo caption không che mặt. Che cổ được. Làm đều tiếng luôn."</div>
-<img class="fig" src="img/chat3.png"><div class="cap">Ảnh minh họa (dựng lại): chèn caption có kiểm tra</div>
+<h2>Thêm phụ đề, làm đều tiếng</h2>
+<div class="say"><b>Bạn nói:</b> "Chèn phụ đề vào video, đảm bảo caption không che mặt. Che cổ được. Làm đều tiếng luôn."</div>
+<img class="fig" src="img/chat_caption.png" style="width:76%;margin-left:auto;margin-right:auto"><div class="cap">Minh họa (dựng lại)</div>
 <h3>Skill làm gì ở bước này?</h3>
-<ol>
-<li><b>Bóc băng</b> lời nói bằng Whisper, rồi Claude <b>tự sửa lỗi nghe nhầm</b> (tên riêng, thuật ngữ). Mẹo: đưa trước danh sách tên riêng để nhận diện đúng.</li>
-<li><b>Quét khuôn mặt</b> trong cả video (6 lần/giây) để biết mặt bạn đang ở đâu từng lúc.</li>
-<li>Mỗi cụm chữ <b>tự chọn chỗ đặt</b>: bình thường dưới ngực; cảnh chia đôi thì <b>ngay dưới khung trên</b>; chạm mặt thì dời chỗ khác.</li>
-<li>Ngay lúc <b>đổi bố cục</b>, caption tạm ẩn khoảng 0,1 giây để không đè mặt lúc hình đang chuyển.</li>
-<li><b>Kiểm tra lại</b> trên video đã in xong: đếm khung nào còn mặt chạm chữ (mục tiêu là 0).</li>
-</ol>
-<img class="fig" src="img/caption_split.png"><div class="cap">Vị trí caption theo từng bố cục (video thử)</div>
-<div class="note"><b>Giới hạn thật thà:</b> chữ có thể che cổ, ngực, tay — chỉ cam kết không che <b>mặt</b>. Nhận diện mặt đôi khi nhầm bàn tay là mặt (làm chữ bị dời không cần thiết) và có thể bỏ sót mặt nghiêng/che. Caption chia thời gian theo từng câu nên có thể lệch vài phần mười giây so với lúc nói.</div>
-
-<h3>Làm đều tiếng, SFX và nhạc nền</h3>
 <ul>
-<li><b>Làm đều tiếng</b>: nếu bạn nói lúc to lúc nhỏ, skill kéo các đoạn về cùng mức và chặn đỉnh để không méo. Nó in <b>số trước/sau</b> để bạn thấy (vd. độ lệch giữa các đoạn từ 2,05 dB xuống 0,78 dB).</li>
-<li><b>SFX</b>: tiếng vụt khi chuyển cảnh, tiếng "bộp" khi thẻ bật lên, tiếng vuốt khi đổi nhân vật. Tự tạo nên không dính bản quyền. Quá nhỏ thì nói "tăng SFX lên".</li>
-<li><b>Nhạc nền</b>: đưa file nhạc và nói "thêm nhạc này, nhỏ thôi". Nhạc tự lặp đủ dài, tự hạ khi bạn nói. Muốn chuyển cảnh trúng nhịp thì nói "khớp nhịp nhạc" (cần cài thêm <code>librosa</code>, Claude sẽ hướng dẫn).</li>
-<li>Claude <b>đo bằng máy</b> chứ không nghe được. <b>Bạn hãy nghe lại</b> trước khi đăng và báo nếu chỗ nào còn to/nhỏ.</li>
+<li><b>Bóc băng</b> lời nói rồi tự <b>sửa lỗi nghe nhầm</b> (tên riêng, thuật ngữ). Đưa trước danh sách tên riêng thì chính xác hơn.</li>
+<li><b>Quét khuôn mặt</b> trong cả video, mỗi cụm chữ <b>tự chọn chỗ không che mặt</b>; cảnh chia đôi thì chữ nằm ngay dưới khung trên.</li>
+<li><b>Làm đều tiếng:</b> kéo đoạn nói to/nhỏ về cùng một mức, chặn đỉnh để không méo.</li>
+<li>Nhạc nền tự hạ xuống khi bạn nói; SFX (vụt, bộp) tự tạo, không dính bản quyền.</li>
 </ul>
-</div>
+<div class="note"><b>Giới hạn thật thà:</b> chữ có thể che cổ, ngực, tay — chỉ cam kết không che <b>mặt</b>. Nhận diện mặt đôi khi nhầm bàn tay. Claude <b>đo âm thanh bằng máy, không nghe được</b> — hãy nghe lại trước khi đăng.</div>
 
-<!-- ============ 9 ============ -->
-<div class="sec">
-<h2>9. Sửa lỗi thường gặp</h2>
+<h2 style="margin-top:20px">Gặp lỗi?</h2>
 <table>
-<tr><th style="width:36%">Hiện tượng</th><th>Cách xử lý</th></tr>
-<tr><td><code>python</code> hoặc <code>ffmpeg</code> "không được nhận diện"</td><td>Đóng hẳn PowerShell rồi mở lại. Python: cài lại và nhớ tick "Add python.exe to PATH".</td></tr>
-<tr><td><code>setup</code> in dòng THIẾU …</td><td>Làm theo đúng lệnh in kèm theo dòng đó (<code>pip install …</code>), rồi chạy lại <code>setup</code>.</td></tr>
-<tr><td>Lần đầu bóc băng rất lâu</td><td>Lần đầu phải tải model nhận diện giọng nói (vài trăm MB đến khoảng 1–2 GB tuỳ model), và máy không có card đồ họa chạy khá chậm. Có thể chọn model nhẹ hơn: "dùng model small".</td></tr>
-<tr><td>Thông báo nguồn không phải 1080×1920</td><td>Nhờ Claude: "đổi source.mp4 sang 1080×1920". Nếu video gốc ngang (16:9) thì không hợp dạng dọc.</td></tr>
-<tr><td>Đầu bạn bị cắt ở cảnh chia đôi</td><td>Nói: "ở cảnh chia đôi, đầu mình bị cắt, dời khung xuống/lên cho thấy đủ đầu" (chỉnh <code>split_crop_y</code>).</td></tr>
-<tr><td>Chữ tràn khung / quá dài</td><td>Rút gọn chữ: "tiêu đề giây 8 quá dài, rút còn 3–4 từ".</td></tr>
-<tr><td>Ảnh bị mờ / crop mất phần quan trọng</td><td>Đưa ảnh gốc lớn hơn, hoặc nói rõ vùng cần giữ.</td></tr>
-<tr><td>Caption bị dời lên cao / lạ</td><td>Thường là nhận diện nhầm bàn tay. Nói Claude: "chạy kiểm tra caption" để xem khung nào, rồi báo giây cụ thể.</td></tr>
-<tr><td>Tiếng nhạc/SFX không nghe thấy</td><td>Nói: "tăng nhạc nền / SFX lên", Claude sẽ đo lại sau khi sửa.</td></tr>
-<tr><td>Đường dẫn có dấu tiếng Việt</td><td>Skill xử lý được. Nếu vẫn lỗi, đặt thư mục dự án ở đường dẫn không dấu (vd. <code>C:\video</code>).</td></tr>
-<tr><td>Dựng quá lâu</td><td>Bình thường (4–6 phút cho mỗi phút video). Dùng "render thử từ giây X đến Y" để duyệt, chỉ render đủ 1 lần.</td></tr>
+<tr><td style="width:32%"><b>Báo lỗi / thiếu gì đó</b></td><td>Dán nguyên thông báo cho Claude và nói "sửa giúp mình". Đa số lỗi nó tự xử lý được.</td></tr>
+<tr><td><b>Dựng lâu</b></td><td>Bình thường: khoảng 4–6 phút cho mỗi phút video. Nói "render thử từ giây X đến Y" để duyệt nhanh.</td></tr>
+<tr><td><b>Lần đầu bóc băng chậm</b></td><td>Phải tải model nhận diện giọng nói (vài trăm MB đến ~1–2 GB). Có thể nói "dùng model nhẹ hơn".</td></tr>
+<tr><td><b>Skill không hiện</b></td><td>Khởi động lại Claude Code, hoặc nói "kiểm tra giúp mình skill pop-edit đã cài chưa".</td></tr>
 </table>
-<div class="note">Gặp lỗi lạ: <b>dán nguyên thông báo lỗi cho Claude</b> và nói "sửa giúp mình". Đa số lỗi nó tự xử lý được.</div>
-
-<h2 style="margin-top:20px">10. Checklist trước khi đăng</h2>
-<table>
-<tr><td>☐ Đã xem video từ đầu đến cuối, nghe cả tiếng</td><td>☐ Không chữ nào tràn khung hay che mặt</td></tr>
-<tr><td>☐ Tên riêng, số liệu trên màn hình khớp lời nói</td><td>☐ Mỗi pop-up trúng lúc bạn nhắc tới</td></tr>
-<tr><td>☐ Ảnh/clip của người khác đều ghi nguồn</td><td>☐ Nhạc nền được phép dùng (và đã ghi nguồn nếu cần)</td></tr>
-<tr><td>☐ Không lộ mật khẩu/key/email trên màn hình</td><td>☐ Tiếng đều, không méo, nhạc không lấn lời</td></tr>
-</table>
-</div>
-
-<!-- ============ 11 ============ -->
-<div class="sec">
-<h2>11. Phụ lục</h2>
-<h3>Mẫu câu nói với Claude (copy dùng)</h3>
-<div class="prompt"><b>Bắt đầu:</b> "Dùng skill pop-edit dựng video này. Source: <code>source.mp4</code>, ảnh: <code>assets/</code>. Nội dung: … Đưa mình bảng kế hoạch trước, chưa dựng."</div>
-<div class="prompt"><b>Duyệt:</b> "Ổn rồi, dựng đi." / "Đoạn … đổi thành …, còn lại giữ nguyên."</div>
-<div class="prompt"><b>Xem nhanh:</b> "Xuất bảng ảnh thu nhỏ toàn video cho mình xem."</div>
-<div class="prompt"><b>Caption:</b> "Chèn phụ đề, né mặt, che cổ được, làm đều tiếng."</div>
-<div class="prompt"><b>Nhạc:</b> "Thêm nhạc <code>nhac.mp3</code> làm nền, nhỏ thôi, hạ khi mình nói."</div>
-<div class="prompt"><b>Đổi tone:</b> "Đổi video sang tone xanh dương."</div>
-<div class="prompt"><b>Kiểm tra cuối:</b> "Kiểm tra theo checklist rồi nói cho mình những gì chưa kiểm được."</div>
-
-<h3>Lệnh chạy tay (nếu bạn muốn tự chạy, không qua Claude)</h3>
-<table>
-<tr><th>Việc</th><th>Lệnh (đứng ở thư mục dự án; <code>PE</code> = đường dẫn tới <code>scripts/popedit.py</code>)</th></tr>
-<tr><td>Kiểm tra máy + tải đồ</td><td><code>python PE setup</code></td></tr>
-<tr><td>Tạo bảng dựng mẫu</td><td><code>python PE new .</code></td></tr>
-<tr><td>Bóc băng</td><td><code>python PE transcribe source.mp4 --lang vi</code></td></tr>
-<tr><td>Bảng ảnh thu nhỏ</td><td><code>python PE sheet project.json --every 2.5</code></td></tr>
-<tr><td>Xem vài khung</td><td><code>python PE stills project.json 10 20 30</code></td></tr>
-<tr><td>Dựng 1 đoạn</td><td><code>python PE render project.json --from 20 --to 35</code></td></tr>
-<tr><td>Dựng đầy đủ</td><td><code>python PE render project.json</code></td></tr>
-<tr><td>Caption né mặt</td><td><code>python PE captions out/final.mp4 --segments captions.json --level --audit</code></td></tr>
-<tr><td>Làm đều tiếng</td><td><code>python PE level out/final.mp4</code></td></tr>
-</table>
-
-<h3>Bảng dựng <code>project.json</code> rút gọn</h3>
-<pre>{
-  "source": "source.mp4",
-  "out": "out/final.mp4",
-  "theme": "be-hong",
-  "audio": { "level": true, "sfx": true },
-  "scenes": [
-    { "t": [2, 6], "layout": "split", "bg": "light", "elements": [
-        { "type": "title", "lines": [["lead", "bước 1"], ["key", "Quay chính bạn"]] },
-        { "type": "media", "file": "assets/man-hinh-1.png", "show": [2.2, 6], "tag": "Nguồn: ..." } ] },
-    { "t": [6, 11], "layout": "full", "bg": "dark", "elements": [
-        { "type": "counter", "value": 276, "prefix": "$", "at": 6.5 } ] }
-  ]
-}</pre>
-<p class="small">Mọi mốc thời gian là <b>giây của video</b>. Khoảng trống giữa các cảnh tự thành cảnh chỉ có bạn. Danh sách đầy đủ các phần tử nằm trong <code>references/elements.md</code>.</p>
-
-<h3>Cấu trúc skill</h3>
-<pre>pop-edit/
-├─ SKILL.md              ← hướng dẫn Claude cách làm (Claude đọc cái này)
-├─ scripts/popedit.py    ← chương trình dựng
-├─ references/           ← tài liệu chi tiết (phần tử, caption, âm thanh, đổi màu)
-└─ examples/demo/        ← bộ demo tự sinh</pre>
-
-<p class="small" style="margin-top:14px">Giấy phép MIT — dùng, sửa, chia sẻ thoải mái. Font Bricolage Grotesque và Plus Jakarta Sans (giấy phép OFL) cùng model nhận diện mặt YuNet (OpenCV, MIT) được tải về khi chạy <code>setup</code>, không đi kèm trong repo.</p>
+<div class="note"><b>Bản quyền &amp; riêng tư:</b> ảnh/clip của người khác phải ghi nguồn; chỉ dùng nhạc được phép (nhạc miễn phí có ghi nguồn, hoặc nhạc bạn sở hữu); đừng để lộ mật khẩu, key, email trên màn hình quay.</div>
+<p class="small" style="margin-top:10px">Mã nguồn &amp; cách tự chạy lệnh: <b>github.com/Annie-246/pop-edit</b> · Giấy phép MIT.</p>
 </div>
 
 </body></html>

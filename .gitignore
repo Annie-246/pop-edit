@@ -5,7 +5,9 @@ out/
 *.mp4
 *.mov
 *.wav
-!docs/img/*.png
+!docs/demo.mp4
+!docs/*.png
 examples/demo/source.mp4
 examples/demo/assets/
 examples/demo/project.json
+_guide.rendered.html
